@@ -110,7 +110,7 @@ include('config.php');
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
                         L.icon({iconUrl: "./meshtasticVectors/marker-satOK-red.svg",
-                                iconSize: [46, 46],
+                               iconSize: [46, 46],
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
                         L.icon({iconUrl: "./meshtasticVectors/marker-satKO-green.svg",
@@ -130,6 +130,15 @@ include('config.php');
         }
     }));
 
+
+function localize(t)
+{
+  var d=new Date(t+" UTC");
+  var dateString = ("0" + d.getHours()).slice(-2) + ":" +
+                   ("0" + d.getMinutes()).slice(-2) + ":" +
+                   ("0" + d.getSeconds()).slice(-2);
+  return dateString;
+}
 
 
 function trackNode(nodeID, duration) {
@@ -222,11 +231,15 @@ function populateMap() {
     }
 
     function onMessageArrived(msg){
-        out_msg="Message received "+msg.payloadString+"<br>";
-	out_msg=out_msg+"Message received Topic "+msg.destinationName;
+        const msgObj = JSON.parse(msg.payloadString);
+        console.log(msg.payloadString);
+        //out_msg="Message received "+msg.payloadString+"<br>";
+	//out_msg=out_msg+"Message received Topic "+msg.destinationName;
 	//console.log(out_msg);
-        $('#updateBox').append(msg.payloadString+"\n");
-        $('#updateBox').scrollTop($('#updateBox')[0].scrollHeight);
+        if((msgObj.type != "text") || (<?= $textEnabled; ?>)) {
+            $('#updateBox').append(localize(msgObj.timestamp)+": "+msgObj.message+"\n");
+            $('#updateBox').scrollTop($('#updateBox')[0].scrollHeight);
+        }
 //        populateMap();
     }
 
