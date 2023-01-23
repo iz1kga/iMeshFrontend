@@ -28,7 +28,7 @@ $conn = new mysqli($servername, $username, $password, $db);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-$yesterday = strtotime('-1 day');
+$yesterday = time() - $oldNodes * 3600;
 
 $query = "SELECT * FROM meshNodes WHERE timestamp>".$yesterday." ORDER BY timestamp DESC";
 $result = mysqli_query($conn, $query);
