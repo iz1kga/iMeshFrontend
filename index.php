@@ -64,6 +64,9 @@ include('config.php');
       <li class="nav-item active">
         <a class="nav-link" href="https://t.me/meshtastic_italia">Join telegram</a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="https://meshwiki.iz1kga.it">Docs</a>
+      </li>
 </ul>
 			</nav>
 			<div class="h-75 row">
@@ -89,7 +92,9 @@ include('config.php');
 
 <script>
 
-    const map = L.map('map').setView([42.5, 12.0], 6);
+    //const map = L.map('map').setView([42.5, 12.0], 6);
+    const map = L.map('map').setView([<?=$lat?>, <?=$lon?>], <?=$zoom?>);
+
 
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                      maxZoom: 19,
@@ -98,7 +103,7 @@ include('config.php');
 
     var geoJSONdata = L.geoJSON();
     var trackData = L.geoJSON();
-    var markers = L.markerClusterGroup({maxClusterRadius: 15});
+    var markers = L.markerClusterGroup({maxClusterRadius: 15, spiderfyOnMaxZoom: false, disableClusteringAtZoom: 7});
 
     const mapMarkers = [L.icon({iconUrl: "./meshtasticVectors/marker-satKO-red.svg",
                                 iconSize: [46, 46],
@@ -124,6 +129,8 @@ include('config.php');
             'true': 'Exit Fullscreen'
         }
     }));
+
+
 
 function trackNode(nodeID, duration) {
     console.log( "Tracking: "+nodeID );
