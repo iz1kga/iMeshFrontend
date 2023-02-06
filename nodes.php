@@ -1,12 +1,18 @@
 <?php
 include('config.php');
 
-function validateNode($lat, $lon, $alt, $pts, $ts)
+function validateNode($lat, $lon, $alt, $pts, $ts, $isRouter)
 {
+    $posTime = 7200;
+    $infoTime = 18000;
+    if($isRouter) {
+        $posTime = 86400;
+        $infoTime = 129600;
+    }
     $status = 0x00;
-    if(($lat>0) && ($lon>0) && ($alt<5000) && (time()-$pts<7200))
+    if(($lat>0) && ($lon>0) && ($alt<5000) && (time()-$pts<$posTime))
         $status = $status | 0x01;
-    if((time()-$ts<18000))
+    if((time()-$ts<$infoTime))
         $status = $status | 0x02;
     return $status;
 }
@@ -28,9 +34,9 @@ $conn = new mysqli($servername, $username, $password, $db);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-$yesterday = time() - $oldNodes * 3600;
+$timeSpan = time() - $oldNodes * 3600;
 
-$query = "SELECT * FROM meshNodes WHERE timestamp>".$yesterday." ORDER BY timestamp DESC";
+$query = "SELECT * FROM meshNodes WHERE timestamp>".$timeSpan." AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
 $result = mysqli_query($conn, $query);
 $data_array = array();
 while ($row = mysqli_fetch_assoc($result)) {
@@ -45,7 +51,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                          "latitude"=>$row["latitude"],
                                          "longitude"=>$row["longitude"],
                                          "nodeStatus"=>validateNode($row["latitude"], $row["longitude"],
-                                                                   $row["altitude"], $row["positionTimestamp"], $row["timestamp"] ),
+                                                                   $row["altitude"], $row["positionTimestamp"], $row["timestamp"], $row["isRouter"], ),
                                          "temperature"=>$row["temperature"],
                                          "pressure"=>$row["pressure"],
                                          "seaLevelPressure"=>scalePressure($row["altitude"], $row["temperature"], $row["pressure"]),
@@ -54,6 +60,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                                          "chUtil"=>$row["chUtil"],
                                          "batteryLevel"=>$row["batteryLevel"],
                                          "batteryVoltage"=>$row["batteryVoltage"],
+                                         "envCurrent"=>$row["envCurrent"],
+                                         "envVoltage"=>$row["envVoltage"],
                                          "lastHeard"=>date('H:i:s d-m-Y', $row["timestamp"]),
                                          "pts"=>$row["positionTimestamp"],
                                          "ts"=>time()-$row["timestamp"],

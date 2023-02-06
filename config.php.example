@@ -16,6 +16,8 @@ $wsSecure = "true";
 $lat = 42.5;
 $lon = 12.0;
 $zoom = 6;
+$clusterRadius = 30;
+
 
 //updatebox
 $textEnabled = "false"; //enable or disable text messages in updatebox
