@@ -1,6 +1,10 @@
 <?PHP
 date_default_timezone_set('Europe/Rome');
 
+// Page data
+$tilte="Page Title"
+$logo="logo.png"; //logo is in ./frontend/logos/
+
 //DB
 $servername = "localhost";
 $username = "USER";

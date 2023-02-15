@@ -30,7 +30,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>MeshTastic Italia Live Map</title>
+    <title><?=$title?></title>
     <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
 
 	<style>

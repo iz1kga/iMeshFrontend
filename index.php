@@ -17,11 +17,11 @@
 ?>
 
 <body>
-
-<?PHP
-    include("pages/".$page.".php");
-?>
-
-
+<div class="container h-100">
+    <div class="row h-100">
+        <?PHP include("common/menu.php"); ?>
+        <?PHP include("pages/".$page.".php"); ?>
+     </div>
+</div>
 </body>
 </html>
