@@ -173,7 +173,7 @@ function populateMap() {
                                 '<b>Track:</b><a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 6);">6h</a>&nbsp;'+
                                 '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 12);">12h</a>&nbsp;'+
                                 '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 24);">1d</a>&nbsp;'+
-                                '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 168);">2d</a>&nbsp;'+
+                                '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 48);">2d</a>&nbsp;'+
                                 '</p>');
         }}); //.addTo(map);
         markers.addLayer(geoJSONdata);
