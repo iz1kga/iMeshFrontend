@@ -121,6 +121,9 @@ function populateMap() {
                 var envVoltage = '';
                 var envCurrent = '';
                 var qrg = '';
+                var rssi = '';
+                var snr = '';
+                var gw = '';
                 if (Feature.properties.temperature) {temp = '<b>Temperature:</b>'+Feature.properties.temperature+' °C</br>'}
                 if ((Feature.properties.humidity) && (Feature.properties.humidity > 0)) {hum = '<b>Humidity:</b>'+Feature.properties.humidity+' %</br>'}
                 if (Feature.properties.pressure) {press = '<b>Pressure:</b>'+Feature.properties.seaLevelPressure+' mbar</br>'}
@@ -150,8 +153,14 @@ function populateMap() {
                         batt = "mdi-battery";
                 }
                 if (Feature.properties.qrg !=0) {qrg = '<b>Frequenza: </b>'+Feature.properties.qrg+' MHz</br>'}
+                if (Feature.properties.rxRssi) { rssi = '<span class="iconify" data-icon="mdi-signal-cellular-2"></span>&nbsp;<h8><b>RSSI: </b>'+Feature.properties.rxRssi+' dBm</h8><br/>'}
+                if (Feature.properties.rxSnr) { snr = '<span class="iconify" data-icon="mdi-broadcast"></span>&nbsp;<h8><b>SNR: </b>'+Feature.properties.rxSnr+' dB</h8></br>'}
+                if (Feature.properties.gwID) { gw = '<span class="iconify" data-icon="mdi-router"></span>&nbsp;<h8><b>GW: </b>'+Feature.properties.gwID+' ('+Feature.properties.gwLongName +')</h8>'}
                 layer.bindPopup('<h3>'+Feature.properties.longName+'</h3>'+
-                                '<h8>'+Feature.properties.hardware+'</h8>&nbsp;<span class="iconify" data-icon="' + batt + '"></span>'+
+                                '<span class="iconify" data-icon="' + batt + '"></span>&nbsp;<h8>'+Feature.properties.hardware+'</h8><br/>'+
+                                rssi+
+                                snr+
+                                gw+
                                 '<p><b>Node ID:</b> '+Feature.properties.nodeID+'<br/>'+
                                 '<b>Short name:</b> '+Feature.properties.shortName+'<br/>'+
                                 '<b>Position:</b> '+Feature.properties.latitude+'°, '+Feature.properties.longitude+'°, '+Feature.properties.altitude+'m<br/>'+

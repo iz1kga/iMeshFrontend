@@ -34,9 +34,11 @@ $conn = new mysqli($servername, $username, $password, $db);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-$timeSpan = time() - $oldNodes * 3600;
+$timeSpan = time() - $oldNodes * 3600 + 3600;
 
-$query = "SELECT * FROM meshNodes WHERE (timestamp>".$timeSpan." OR isRouter <> 0) AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
+//$query = "SELECT * FROM meshNodes WHERE (timestamp>".$timeSpan." OR isRouter <> 0) AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
+$query = "SELECT m1.*, m2.longName as gwLongName FROM meshNodes m1 LEFT JOIN meshNodes m2 ON m1.gwID = m2.id WHERE (m1.timestamp >".$timeSpan." OR m1.isRouter <> 0) AND (m1.latitude <> 0 AND m1.longitude <> 0) ORDER BY timestamp DESC";
+
 $result = mysqli_query($conn, $query);
 $data_array = array();
 while ($row = mysqli_fetch_assoc($result)) {
@@ -67,6 +69,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                                          "qrg"=>$row["qrg"],
                                          "pts"=>$row["positionTimestamp"],
                                          "ts"=>time()-$row["timestamp"],
+                                         "rxSnr"=>$row["rxSnr"],
+                                         "rxRssi"=>$row["rxRssi"],
+                                         "gwID"=>$row["gwID"],
+                                         "gwLongName"=>$row["gwLongName"],
                                         ),
                      "geometry"=>array("type"=>"Point", "coordinates"=>array(floatval($row["longitude"]), floatval($row["latitude"])))
                     ));
