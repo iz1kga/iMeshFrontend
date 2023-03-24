@@ -5,15 +5,15 @@ function validateNode($lat, $lon, $alt, $pts, $ts, $isRouter)
 {
     $posTime = 7200;
     $infoTime = 18000;
-    if($isRouter) {
-        $posTime = 86400;
-        $infoTime = 129600;
-    }
     $status = 0x00;
     if(($lat>0) && ($lon>0) && ($alt<5000) && (time()-$pts<$posTime))
         $status = $status | 0x01;
     if((time()-$ts<$infoTime))
         $status = $status | 0x02;
+    if ($isRouter==1)
+        $status = 0x04;
+    if ($isRouter==2)
+        $status = 0x05;
     return $status;
 }
 
@@ -36,7 +36,7 @@ if ($conn->connect_error) {
 }
 $timeSpan = time() - $oldNodes * 3600;
 
-$query = "SELECT * FROM meshNodes WHERE timestamp>".$timeSpan." AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
+$query = "SELECT * FROM meshNodes WHERE (timestamp>".$timeSpan." OR isRouter <> 0) AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
 $result = mysqli_query($conn, $query);
 $data_array = array();
 while ($row = mysqli_fetch_assoc($result)) {
@@ -47,6 +47,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                          "longName"=>$row["longName"],
                                          "shortName"=>$row["shortName"],
                                          "hardware"=>$row["hardware"],
+                                         "channel"=>$row["channel"],
                                          "altitude"=>$row["altitude"],
                                          "latitude"=>$row["latitude"],
                                          "longitude"=>$row["longitude"],
@@ -63,6 +64,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                          "envCurrent"=>$row["envCurrent"],
                                          "envVoltage"=>$row["envVoltage"],
                                          "lastHeard"=>date('H:i:s d-m-Y', $row["timestamp"]),
+                                         "qrg"=>$row["qrg"],
                                          "pts"=>$row["positionTimestamp"],
                                          "ts"=>time()-$row["timestamp"],
                                         ),

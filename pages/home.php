@@ -34,19 +34,27 @@
                                             },
                                         });
 
-    const mapMarkers = [L.icon({iconUrl: "./meshtasticVectors/marker-satKO-red.svg",
+    const mapMarkers = [L.icon({iconUrl: "./frontend/meshtasticVectors/marker-satKO-red.svg",
                                 iconSize: [46, 46],
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
-                        L.icon({iconUrl: "./meshtasticVectors/marker-satOK-red.svg",
+                        L.icon({iconUrl: "./frontend/meshtasticVectors/marker-satOK-red.svg",
                                iconSize: [46, 46],
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
-                        L.icon({iconUrl: "./meshtasticVectors/marker-satKO-green.svg",
+                        L.icon({iconUrl: "./frontend/meshtasticVectors/marker-satKO-green.svg",
                                 iconSize: [46, 46],
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
-                        L.icon({iconUrl: "./meshtasticVectors/marker-satOK-green.svg",
+                        L.icon({iconUrl: "./frontend/meshtasticVectors/marker-satOK-green.svg",
+                                iconSize: [46, 46],
+                                iconAnchor: [15.5, 42],
+                                popupAnchor: [0, -45] }),
+                        L.icon({iconUrl: "./frontend/meshtasticVectors/marker-repeater-green.svg",
+                                iconSize: [46, 46],
+                                iconAnchor: [15.5, 42],
+                                popupAnchor: [0, -45] }),
+                        L.icon({iconUrl: "./frontend/meshtasticVectors/marker-repeater-gateway-green.svg",
                                 iconSize: [46, 46],
                                 iconAnchor: [15.5, 42],
                                 popupAnchor: [0, -45] }),
@@ -112,6 +120,7 @@ function populateMap() {
                 var batt = '';
                 var envVoltage = '';
                 var envCurrent = '';
+                var qrg = '';
                 if (Feature.properties.temperature) {temp = '<b>Temperature:</b>'+Feature.properties.temperature+' °C</br>'}
                 if ((Feature.properties.humidity) && (Feature.properties.humidity > 0)) {hum = '<b>Humidity:</b>'+Feature.properties.humidity+' %</br>'}
                 if (Feature.properties.pressure) {press = '<b>Pressure:</b>'+Feature.properties.seaLevelPressure+' mbar</br>'}
@@ -129,7 +138,7 @@ function populateMap() {
                         batt = "mdi-battery-40";
                     if (Feature.properties.batteryLevel >= 45)
                         batt = "mdi-battery-50";
-                    if (Feature.properties.pessure >= 55)
+                    if (Feature.properties.batteryLevel >= 55)
                         batt = "mdi-battery-60";
                     if (Feature.properties.batteryLevel >= 65)
                         batt = "mdi-battery-70";
@@ -140,11 +149,14 @@ function populateMap() {
                     if (Feature.properties.batteryLevel >= 95)
                         batt = "mdi-battery";
                 }
+                if (Feature.properties.qrg !=0) {qrg = '<b>Frequenza: </b>'+Feature.properties.qrg+' MHz</br>'}
                 layer.bindPopup('<h3>'+Feature.properties.longName+'</h3>'+
                                 '<h8>'+Feature.properties.hardware+'</h8>&nbsp;<span class="iconify" data-icon="' + batt + '"></span>'+
                                 '<p><b>Node ID:</b> '+Feature.properties.nodeID+'<br/>'+
                                 '<b>Short name:</b> '+Feature.properties.shortName+'<br/>'+
                                 '<b>Position:</b> '+Feature.properties.latitude+'°, '+Feature.properties.longitude+'°, '+Feature.properties.altitude+'m<br/>'+
+                                '<b>Channel:</b> '+Feature.properties.channel+'<br/>'+
+                                qrg+
                                 '<b>CH Util:</b> '+Feature.properties.chUtil+'%<br/>'+
                                 '<b>Air Util:</b> '+Feature.properties.airUtil+'%<br/>'+
                                 temp+
@@ -156,7 +168,7 @@ function populateMap() {
                                 '<b>Track:</b><a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 6);">6h</a>&nbsp;'+
                                 '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 12);">12h</a>&nbsp;'+
                                 '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 24);">1d</a>&nbsp;'+
-                                '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 168);">2d</a>&nbsp;'+
+                                '<a id="myLink" href="#" onclick="trackNode(\''+Feature.properties.nodeID+'\', 48);">2d</a>&nbsp;'+
                                 '</p>');
         }}); //.addTo(map);
         markers.addLayer(geoJSONdata);
