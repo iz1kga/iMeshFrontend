@@ -34,10 +34,17 @@ $conn = new mysqli($servername, $username, $password, $db);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-$timeSpan = time() - $oldNodes * 3600 + 3600;
+
+if (isset($_GET['timeSpan'])) { $getSpan = $_GET['timeSpan']; } else { $getSpan = 24;  }
+if (isset($_GET['QRG']) &&  $_GET['QRG']!=0) { $QRG = "AND m1.qrg=".$_GET['QRG']." "; } else { $QRG = "";  }
+if (isset($_GET['channel']) &&  $_GET['channel']!="ALL") { $CH = "AND m1.channel=\"".$_GET['channel']."\" "; } else { $CH = "";  }
+
+$timeSpan = time() - $getSpan * 3600;
 
 //$query = "SELECT * FROM meshNodes WHERE (timestamp>".$timeSpan." OR isRouter <> 0) AND latitude<>0 AND longitude<>0 ORDER BY timestamp DESC";
-$query = "SELECT m1.*, m2.longName as gwLongName FROM meshNodes m1 LEFT JOIN meshNodes m2 ON m1.gwID = m2.id WHERE (m1.timestamp >".$timeSpan." OR m1.isRouter <> 0) AND (m1.latitude <> 0 AND m1.longitude <> 0) ORDER BY timestamp DESC";
+$query = "SELECT m1.*, m2.longName as gwLongName FROM meshNodes m1 LEFT JOIN meshNodes m2 ON m1.gwID = m2.id WHERE (m1.timestamp >".$timeSpan." OR m1.isRouter <> 0) AND (m1.latitude <> 0 AND m1.longitude <> 0) ".$QRG.$CH."ORDER BY timestamp DESC";
+//echo $query;
+//$query = "SELECT m1.*, m2.longName as gwLongName FROM meshNodes m1 LEFT JOIN meshNodes m2 ON m1.gwID = m2.id WHERE (m1.timestamp >".$timeSpan." OR m1.isRouter <> 0) AND (m1.latitude <> 0 AND m1.longitude <> 0) ORDER BY timestamp DESC";
 
 $result = mysqli_query($conn, $query);
 $data_array = array();

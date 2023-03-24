@@ -3,14 +3,39 @@
         <div id='map'></div>
     </div>
     <div class="col-md-4">
-        <div id="tableDiv" class="tbodyDiv">
-            <table class="table table-striped" id="nodeTable">
-                <thead class="sticky-top bg-white"><tr><th scope="col">Name</th><th scope="col">ID</th><th scope="col">L.H.</th></tr></thead>
-            </table>
+        <div class="row" style="margin-top:15px">
+            <div id="filterDiv" class="tbodyDiv">
+                <h8>Frequency:</h8>
+                <select name="QRG" id="QRG">
+                    <option value="0">ALL</option>
+                    <option value="433">433 MHz</option>
+                    <option value="868">868 MHz</option>
+                </select>
+                <h8>Channel:</h8>
+                <select name="channel" id="channel">
+                    <option value="ALL">ALL</option>
+                    <option value="LongFast">LongFast</option>
+                    <option value="MediumFast">MediumFast</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div id="tableDiv" class="tbodyDiv" style="max-height:660px">
+                <table class="table table-striped" id="nodeTable">
+                    <thead class="sticky-top bg-white">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Frequency</th>
+                            <th scope="col">L.H.</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row" style="margin-top: 15px">
     <div class="col-md-12">
         <textarea class="form-control" id="updateBox" rows="5"></textarea>
     </div>
@@ -101,9 +126,12 @@ function centerNode(lat, lon) {
     map.setView([lat, lon], 18);
 }
 
-function populateMap() {
-    var jqxhr = $.getJSON( "nodes.php", function(mp) {
-        //console.log( "success" );
+function populateMap(QRG, channel) {
+    var url = "nodes.php?";
+        url = url +"QRG="+QRG;
+        url = url +"&channel="+channel;
+    var jqxhr = $.getJSON( url, function(mp) {
+        console.log( url );
 
     map.removeLayer(markers);
     map.removeLayer(geoJSONdata);
@@ -117,7 +145,7 @@ function populateMap() {
                 var temp = '';
                 var hum = '';
                 var press = '';
-                var batt = '';
+                var batt = 'mdi-power-plug';
                 var envVoltage = '';
                 var envCurrent = '';
                 var qrg = '';
@@ -191,6 +219,7 @@ function populateMap() {
              $.each(mp, function(i, Feature) {
                  $('#nodeTable').append('<tr><td scope="row"><a href="#" onclick="centerNode('+Feature.properties.latitude+', '+Feature.properties.longitude+')">'+Feature.properties.longName+'</a></td>'+
                                         '<td>'+Feature.properties.nodeID+'</td>'+
+                                        '<td>'+Feature.properties.qrg+' MHz</td>'+
                                         '<td>'+Feature.properties.lastHeard+'</td></tr>');
              });
              $('#nodeTable').append('</tbody>');
@@ -263,9 +292,17 @@ function populateMap() {
 
     MQTTconnect();
     resize();
-    populateMap();
+    populateMap( $('#QRG').val(), $('#channel').val() );
+
+    $( "#QRG" ).change(function() {
+        populateMap($('#QRG').val(), $('#channel').val());
+    });
+    $( "#channel" ).change(function() {
+        populateMap($('#QRG').val(), $('#channel').val());
+    });
+
 
     const interval = setInterval(function() {
-       populateMap();
+        populateMap($('#QRG').val(), $('#channel').val());
     }, 60000);
 </script>
